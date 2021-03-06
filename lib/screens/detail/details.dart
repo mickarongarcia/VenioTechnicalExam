@@ -13,6 +13,12 @@ class DetailsPage extends StatelessWidget {
       appBar: AppBar(
           automaticallyImplyLeading: false,
           elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_rounded),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search),

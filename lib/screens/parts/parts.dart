@@ -65,9 +65,6 @@ class _PartsState extends State<PartsPage> {
               ),
             ),
           ),
-          Text(
-            selectedIndex.toString(),
-          )
         ],
       ),
     );

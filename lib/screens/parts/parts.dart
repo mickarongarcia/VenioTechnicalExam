@@ -1,10 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:technical_exam/models/products.dart';
 import 'package:technical_exam/screens/cart/cart.dart';
 import 'package:technical_exam/screens/detail/details.dart';
 
-class PartsPage extends StatelessWidget {
+class PartsPage extends StatefulWidget {
+  @override
+  _PartsState createState() => _PartsState();
+}
+
+class _PartsState extends State<PartsPage> {
+  int selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,24 +41,33 @@ class PartsPage extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Menu(),
+          Menu(
+            onIndexChange: (int val) {
+              setState(() {
+                selectedIndex = val;
+              });
+            },
+          ),
           Expanded(
             child: GridView.builder(
-              itemCount: products.length,
+              itemCount: products[selectedIndex].length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 0.75,
               ),
               itemBuilder: (context, index) => ProductsArea(
-                product: products[index],
+                product: products[selectedIndex][index],
                 press: () => Navigator.push(
                     context,
                     new MaterialPageRoute(
-                        builder: (context) =>
-                            DetailsPage(product: products[index]))),
+                        builder: (context) => DetailsPage(
+                            product: products[selectedIndex][index]))),
               ),
             ),
           ),
+          Text(
+            selectedIndex.toString(),
+          )
         ],
       ),
     );
@@ -60,11 +78,7 @@ class ProductsArea extends StatelessWidget {
   final Product product;
   final Function press;
 
-  const ProductsArea({
-    Key key,
-    this.product,
-    this.press,
-  }) : super(key: key);
+  ProductsArea({Key key, this.product, this.press}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +112,9 @@ class ProductsArea extends StatelessWidget {
 }
 
 class Menu extends StatefulWidget {
+  final Function(int) onIndexChange;
+
+  Menu({this.onIndexChange});
   @override
   _MenuState createState() => _MenuState();
 }
@@ -105,6 +122,7 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   List<String> parts = [
     'Video Card',
+    'Processor',
     'Motherboard',
     'RAM',
     'Storage',
@@ -113,6 +131,7 @@ class _MenuState extends State<Menu> {
     'Cooling',
     'Accessories'
   ];
+
   int selectedIndex = 0;
 
   @override
@@ -130,6 +149,7 @@ class _MenuState extends State<Menu> {
       onTap: () {
         setState(() {
           selectedIndex = index;
+          widget.onIndexChange(selectedIndex);
         });
       },
       child: Padding(
